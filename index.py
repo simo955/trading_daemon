@@ -18,22 +18,23 @@ def getInfo(symbol):
     response = queryEndpoint(url)
     return response if response else None
 
-def computeDifference(quotes_list, current_quote):
-    previous_quote = quotes_list[-1]
+def computeDifference(quotes_list, current_quote, index=0):
+    previous_quote = quotes_list[index]
     abs_diff = abs(current_quote - previous_quote)
-    return ( abs_diff * 100 )/previous_quote
+    return round(( abs_diff * 100 )/previous_quote, 2)
 
 def manage_stack(quotes_list, symbol):
     info = getInfo(symbol)
     quote = lget(info, ['price'], None)
+    l = len(quotes_list)
+    if(l>=1):
+        # compute difference only on the last 5 elems
+        for i in range(max(l-5, 0),l):
+            percentage_diff=computeDifference(quotes_list, quote, i)
+            print('********Differance in percentage********', percentage_diff)
     if(quote):
         quotes_list.append(quote)
-        if (len(quotes_list)>1):
-            percentage_diff=computeDifference(quotes_list, quote)
-            print('Differance in percentage', percentage_diff)
-    else:
-        print("Error - quote is None")
-    print('LIST',quotes_list)
+    print(quotes_list)
     return
 
 

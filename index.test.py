@@ -20,6 +20,9 @@ class TestSum(unittest.TestCase):
         result = computeDifference([1,2,1,100],85)
         self.assertEqual(result, 15.0, "Should be 15%")
 
+        result = computeDifference([1,2,1,85],100)
+        self.assertEqual(result, 18, "Should be 15%")
+
 
 if __name__ == '__main__':
     unittest.main()
