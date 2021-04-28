@@ -12,13 +12,11 @@ def queryEndpoint(url):
     parsed_response = json.loads(data)
     return lget(parsed_response, [0], {})
 
-def getQuote(symbol):
+def getInfo(symbol):
     print('Get quote of symbol ' + symbol)
     url = BASE_URL+symbol+'?apikey={}'.format(API_KEY)
     response = queryEndpoint(url)
-    if (response):
-        return lget(response, ['price'], None)
-    return None
+    return response if response else None
 
 def computeDifference(quotes_list, current_quote):
     previous_quote = quotes_list[-1]
@@ -26,11 +24,15 @@ def computeDifference(quotes_list, current_quote):
     return ( abs_diff * 100 )/previous_quote
 
 def manage_stack(quotes_list, symbol):
-    quote = getQuote(symbol)
-    quotes_list.append(quote)
-    if (len(quotes_list)>1):
-        percentage_diff=computeDifference(quotes_list, quote)
-        print('Differance in percentage', percentage_diff)
+    info = getInfo(symbol)
+    quote = lget(info, ['price'], None)
+    if(quote):
+        quotes_list.append(quote)
+        if (len(quotes_list)>1):
+            percentage_diff=computeDifference(quotes_list, quote)
+            print('Differance in percentage', percentage_diff)
+    else:
+        print("Error - quote is None")
     print('LIST',quotes_list)
     return
 
