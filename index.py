@@ -1,50 +1,49 @@
 from urllib.request import urlopen
 from pydash import get as lget
+from consts import API_KEY, BASE_URL, STARTING_SYMBOL, quote_endpoint
 import time
 import json
 
-BASE_URL='https://financialmodelingprep.com/api/v3/quote/'
-API_KEY= '34a1467433844d42bcb7b83695ff210b'
+def constructURL(base,endpoint,key, query):
+    return '{}{}/{}?apikey={}'.format(base,endpoint,query,key)
 
-def queryEndpoint(url):
+#Query financialmodelingprep API to get the quote of the symbol
+def getQuote(symbol):
+    print('Get info of symbol ' + symbol)
+    url = constructURL(BASE_URL,quote_endpoint,API_KEY,symbol)
     response = urlopen(url)
     data = response.read().decode("utf-8")
     parsed_response = json.loads(data)
-    return lget(parsed_response, [0], {})
+    return lget(parsed_response, [0], None)
 
-def getInfo(symbol):
-    print('Get quote of symbol ' + symbol)
-    url = BASE_URL+symbol+'?apikey={}'.format(API_KEY)
-    response = queryEndpoint(url)
-    return response if response else None
-
+#Compute the difference between the current_quote and quotes_list[index]
 def computeDifference(quotes_list, current_quote, index=0):
     previous_quote = quotes_list[index]
     abs_diff = abs(current_quote - previous_quote)
-    return round(( abs_diff * 100 )/previous_quote, 2)
+    return round(( abs_diff * 100 )/previous_quote)
 
+#Get the quote of the symbol and compute the difference of the last 5 quotes
 def manage_stack(quotes_list, symbol):
-    info = getInfo(symbol)
-    quote = lget(info, ['price'], None)
+    info = getQuote(symbol)
+    price = lget(info, ['price'], None)
     l = len(quotes_list)
     if(l>=1):
         # compute difference only on the last 5 elems
         for i in range(max(l-5, 0),l):
-            percentage_diff=computeDifference(quotes_list, quote, i)
+            percentage_diff=computeDifference(quotes_list, price, i)
+            print('I',i, percentage_diff)
             print('********Differance in percentage********', percentage_diff)
-    if(quote):
-        quotes_list.append(quote)
+    if(price):
+        quotes_list.append(price)
     print(quotes_list)
     return
 
 
 def main():
-    starttime = time.time()    
     quotes_list = []
-    symbol = 'CCL'
     while True:
-        manage_stack(quotes_list,symbol)
-        time.sleep(60.0 - ((time.time() - starttime) % 60.0))
+        manage_stack(quotes_list,STARTING_SYMBOL)
+        time.sleep(60.0 - ((time.time()) % 60.0))
 
 if __name__ == "__main__":
     main()
