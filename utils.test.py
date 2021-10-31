@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch # for Python >= 3.3 use unittest.mock
 from pydash import get as lget
-from index import getQuote, computeDifference
+from utils import getQuote, computeDifference
 
 class TestSum(unittest.TestCase):
 

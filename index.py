@@ -1,52 +1,35 @@
-from urllib.request import urlopen
-from pydash import get as lget
-from consts import API_KEY, BASE_URL, STARTING_SYMBOL, quote_endpoint
+import logging
+import sys
 import time
-import json
+import daemonocle
 
-def constructURL(base,endpoint,key, query):
-    return '{}{}/{}?apikey={}'.format(base,endpoint,query,key)
+from utils import manage_stack
 
-#Query financialmodelingprep API to get the quote of the symbol
-def getQuote(symbol):
-    print('Get info of symbol ' + symbol)
-    url = constructURL(BASE_URL,quote_endpoint,API_KEY,symbol)
-    response = urlopen(url)
-    data = response.read().decode("utf-8")
-    parsed_response = json.loads(data)
-    return lget(parsed_response, [0], None)
 
-#Compute the difference between the current_quote and quotes_list[index]
-def computeDifference(quotes_list, current_quote, index=0):
-    previous_quote = quotes_list[index]
-    abs_diff = abs(current_quote - previous_quote)
-    return round(( abs_diff * 100 )/previous_quote)
-
-#Get the quote of the symbol and compute the difference of the last 5 quotes
-def manage_stack(quotes_list, symbol):
-    info = getQuote(symbol)
-    price = lget(info, ['price'], None)
-    l = len(quotes_list)
-    if(l>=1):
-        # compute difference only on the last 5 elems
-        for i in range(max(l-5, 0),l):
-            percentage_diff=computeDifference(quotes_list, price, i)
-            print('I',i, percentage_diff)
-            print('********Differance in percentage********', percentage_diff)
-    if(price):
-        quotes_list.append(price)
-    print(quotes_list)
-    return
-
+def shutdown(message, code):
+    logging.info('Daemon is stopping')
+    logging.debug(message)
 
 def main():
-    quotes_list = []
+    print('1')
+    quotes_list=[]
+    logging.basicConfig(
+        filename='/log/daemonocle_example.log',
+        level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s',
+    )
+    print('2')
+    logging.info('Daemon is starting')
     while True:
+        print('3')
+        logging.debug('Still running')
         manage_stack(quotes_list,STARTING_SYMBOL)
-        time.sleep(60.0 - ((time.time()) % 60.0))
+        time.sleep(60)
 
-if __name__ == "__main__":
-    main()
-
-
-
+if __name__ == '__main__':
+    daemon = daemonocle.Daemon(
+        worker=main,
+        shutdown_callback=shutdown,
+        pid_file='/run/daemonocle_example.pid',
+        detach=False
+    )
+    daemon.do_action(sys.argv[1])
