@@ -31,7 +31,6 @@ def manage_stack(quotes_list, symbol):
         # compute difference only on the last 5 elems
         for i in range(max(l-5, 0),l):
             percentage_diff=computeDifference(quotes_list, price, i)
-            print('I',i, percentage_diff)
             print('********Differance in percentage********', percentage_diff)
     if(price):
         quotes_list.append(price)

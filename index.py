@@ -4,7 +4,7 @@ import time
 import daemonocle
 
 from utils import manage_stack
-from conf import STARTING_SYMBOL
+from conf import STARTING_SYMBOL, SLEEP_SECONDS
 
 
 def shutdown(message, code):
@@ -20,7 +20,7 @@ def main():
     while True:
         logging.debug('Still running')
         manage_stack(quotes_list,STARTING_SYMBOL)
-        time.sleep(60)
+        time.sleep(SLEEP_SECONDS)
 
 if __name__ == '__main__':
     daemon = daemonocle.Daemon(
