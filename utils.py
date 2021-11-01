@@ -1,6 +1,6 @@
 from urllib.request import urlopen
 from pydash import get as lget
-from consts import API_KEY, BASE_URL, STARTING_SYMBOL, quote_endpoint
+from conf import API_KEY, BASE_URL, quote_endpoint
 import time
 import json
 
