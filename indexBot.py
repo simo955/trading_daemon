@@ -36,16 +36,21 @@ logger = logging.getLogger(__name__)
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
-# Best practice would be to replace context with an underscore,
-# since context is an unused local variable.
-# This being an example and not having context present confusing beginners,
-# we decided to have it present as context.
-def start(update: Update, context: CallbackContext) -> None:
+def start(update: Update, context: _) -> None:
     """Sends explanation on how to use the bot."""
-    update.message.reply_text('Hi welcom to {}! Now it ll start a polling for CCL news'.format(BOT_NAME))
+    update.message.reply_text(
+        'Hi welcom to {} {}! Now it ll start a polling for CCL news'.format(BOT_NAME,isConfigured),
+         quote=True
+         )
 
-
-def set_polling(update: Update, context: CallbackContext) -> None:
+def start_deamon(update: Update, context: _) -> None:
+    global isConfigured
+    if not isConfigured:
+        update.message.reply_text(
+            'First: configure your deamon with the /configure_bot command',
+            quote=True
+        )
+        return 
     quotes_list=[]
     update.message.reply_text('Daemon is starting')
     while True:
@@ -54,7 +59,10 @@ def set_polling(update: Update, context: CallbackContext) -> None:
         update.message.reply_text(res)
         time.sleep(SLEEP_SECONDS)
 
-
+#Function used to to set all the configurations required for the Deamon run
+def configure_bot(update: Update, context: _) -> None:
+    global isConfigured
+    isConfigured=True
 
 def main() -> None:
     """Run bot."""
@@ -67,7 +75,8 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", start))
-    dispatcher.add_handler(CommandHandler("set_polling", set_polling))
+    dispatcher.add_handler(CommandHandler("configure_bot", configure_bot))
+    dispatcher.add_handler(CommandHandler("start_deamon", start_deamon))
 
     # Start the Bot
     updater.start_polling()
@@ -79,4 +88,5 @@ def main() -> None:
 
 
 if __name__ == '__main__':
+    isConfigured = False
     main()
