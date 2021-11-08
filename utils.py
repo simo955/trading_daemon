@@ -35,7 +35,7 @@ def manage_stack(quotes_list, symbol):
     if(price):
         quotes_list.append(price)
     print(quotes_list)
-    return
+    return quotes_list
 
 
 
