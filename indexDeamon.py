@@ -19,7 +19,7 @@ def main():
     logging.info('Daemon is starting')
     while True:
         logging.debug('Still running')
-        manage_stack(quotes_list,STARTING_SYMBOL)
+        manage_stack(logging, quotes_list,STARTING_SYMBOL)
         time.sleep(SLEEP_SECONDS)
 
 if __name__ == '__main__':

@@ -1,9 +1,22 @@
 from urllib.request import urlopen
 from pydash import get as lget
-from conf import API_KEY, BASE_URL, quote_endpoint
+from conf import BASE_URL, quote_endpoint
+from keys import API_KEY
 import time
 import json
 
+NO_UPDATE_MSG = 'No significant different in percentage'
+
+
+def areBotConfigurationsValids(ticker, seconds):
+    if ticker is None or seconds is None:
+        return False
+    if ticker == '':
+        return False
+    if seconds < 10 or seconds > 10000:
+        return False
+    return True
+    
 def constructURL(base,endpoint,key, query):
     return '{}{}/{}?apikey={}'.format(base,endpoint,query,key)
 
@@ -23,18 +36,17 @@ def computeDifference(quotes_list, current_quote, index=0):
     return round(( abs_diff * 100 )/previous_quote)
 
 #Get the quote of the symbol and compute the difference of the last 5 quotes
-def manage_stack(quotes_list, symbol):
-    info = getQuote(symbol)
-    price = lget(info, ['price'], None)
-    l = len(quotes_list)
-    if(l>=1):
+def manage_stack(logger, quotes_list, symbol):
+    numPastQuotes = len(quotes_list)
+    currentQuote = getQuote(symbol)
+    currentPrice = lget(currentQuote, ['price'], None)
+    if numPastQuotes>=1 and currentPrice:
         # compute difference only on the last 5 elems
-        for i in range(max(l-5, 0),l):
-            percentage_diff=computeDifference(quotes_list, price, i)
+        for i in range(max(numPastQuotes-5, 0),numPastQuotes):
+            percentage_diff=computeDifference(quotes_list, currentPrice, i)
             print('********Differance in percentage********', percentage_diff)
-    if(price):
-        quotes_list.append(price)
-    print(quotes_list)
+        quotes_list.append(currentPrice)
+    logger.debug('Manage Stack, quote list:', quotes_list)
     return quotes_list
 
 
