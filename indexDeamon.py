@@ -3,23 +3,30 @@ import sys
 import time
 import daemonocle
 
-from utils import manage_stack
-from conf import STARTING_SYMBOL, SLEEP_SECONDS
+from getQuotes import manage_stack
+from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG
+
+# Enable logging
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+)
+logger = logging.getLogger(__name__)
+
 
 
 def shutdown(message, code):
-    logging.info('Daemon is stopping')
-    logging.debug(message)
+    logger.info('Daemon is stopping')
+    logger.info(message)
 
 def main():
     quotes_list=[]
-    logging.basicConfig(
-        level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s',
-    )
-    logging.info('Daemon is starting')
+    logger.info('Daemon is starting')
     while True:
-        logging.debug('Still running')
-        manage_stack(logging, quotes_list,STARTING_SYMBOL)
+        logger.debug('Still running')
+        msg = manage_stack(logger, quotes_list, STARTING_SYMBOL)
+        logger.info('Ending iteration. MSG={}'.format(msg))
+        if msg==UPDATE_MSG:
+            logger.warning(msg)
         time.sleep(SLEEP_SECONDS)
 
 if __name__ == '__main__':
@@ -29,3 +36,7 @@ if __name__ == '__main__':
         detach=False
     )
     daemon.do_action(sys.argv[1])
+
+
+
+# run with python3 indexDeamon.py start

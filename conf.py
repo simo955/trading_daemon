@@ -4,6 +4,7 @@ SLEEP_SECONDS=10
 BOT_NAME='TrAdInG-DeAmOn-BoT'
 PERCENTAGE_DIFF_TRESHOLD=10
 NO_UPDATE_MSG = 'No significant different in percentage'
+UPDATE_MSG = 'Check it out! The price changed rapidly!'
 
 quote_endpoint ='/quote'
 bot_configuration_cmd='conf_bot'
