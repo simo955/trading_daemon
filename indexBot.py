@@ -4,7 +4,8 @@ import time
 from telegram import Update
 from telegram.ext import Updater, MessageHandler, Filters,CommandHandler, CallbackContext
 
-from utils import manage_stack, areBotConfigurationsValids
+from getQuotes import manage_stack
+from utils import areBotConfigurationsValids
 from conf import STARTING_SYMBOL, SLEEP_SECONDS, BOT_NAME, bot_configuration_cmd, bot_start_deamong_cmd
 from keys import BOT_TOKEN
 
@@ -37,7 +38,7 @@ def start_deamon(update: Update, _: CallbackContext) -> None:
     update.message.reply_text('Daemon is starting')
     while True:
         logger.debug('Still running')
-        res = manage_stack(logger, quotes_list,STARTING_SYMBOL)
+        res = manage_stack(logger, quotes_list, STARTING_SYMBOL)
         update.message.reply_text(res)
         time.sleep(SLEEP_SECONDS)
 
