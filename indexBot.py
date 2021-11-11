@@ -6,14 +6,13 @@ from telegram.ext import Updater, MessageHandler, Filters,CommandHandler, Callba
 
 from getQuotes import manage_stack
 from utils import areBotConfigurationsValids
-from conf import STARTING_SYMBOL, SLEEP_SECONDS, BOT_NAME, bot_configuration_cmd, bot_start_deamong_cmd
+from conf import STARTING_SYMBOL, SLEEP_SECONDS, BOT_NAME,UPDATE_MSG, bot_configuration_cmd, bot_start_deamong_cmd
 from keys import BOT_TOKEN
 
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
-
 logger = logging.getLogger(__name__)
 
 
@@ -38,8 +37,10 @@ def start_deamon(update: Update, _: CallbackContext) -> None:
     update.message.reply_text('Daemon is starting')
     while True:
         logger.debug('Still running')
-        res = manage_stack(logger, quotes_list, STARTING_SYMBOL)
-        update.message.reply_text(res)
+        msg = manage_stack(logger, quotes_list, STARTING_SYMBOL)
+        logger.info('Ending iteration. MSG={}'.format(msg))
+        if msg==UPDATE_MSG:
+            update.message.reply_text(msg)
         time.sleep(SLEEP_SECONDS)
 
 #Function used to to set all the configurations required for running the deamon
