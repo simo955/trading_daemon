@@ -1,10 +1,11 @@
+import json
+import os
 from urllib.request import urlopen
 from pydash import get as lget
-import json
-    
+   
 from conf import BASE_URL, PERCENTAGE_DIFF_TRESHOLD, NO_UPDATE_MSG,UPDATE_MSG, quote_endpoint
 from utils import constructURL,  avg
-from keys import API_KEY
+API_KEY = os.environ.get('API_KEY')
 
 #Query financialmodelingprep API to get the quote of the symbol
 def getQuote(logger,symbol):

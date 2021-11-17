@@ -1,5 +1,6 @@
 import logging
 import time
+import os
 
 from telegram import Update
 from telegram.ext import Updater, MessageHandler, Filters,CommandHandler, CallbackContext
@@ -88,8 +89,10 @@ def main() -> None:
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echoWrongCommand))
 
     # Start the Bot
-    updater.start_polling()
-
+    updater.start_webhook(listen="0.0.0.0",
+                        port=PORT,
+                        url_path=BOT_TOKEN,
+                        webhook_url="https://tradingdeamon.herokuapp.com/" + BOT_TOKEN)
     # Block until you press Ctrl-C or the process receives SIGINT, SIGTERM or
     # SIGABRT. This should be used most of the time, since start_polling() is
     # non-blocking and will stop the bot gracefully.

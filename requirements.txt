@@ -1,0 +1,2 @@
+python-telegram-bot==13.8.1
+pydash==5.1.0
