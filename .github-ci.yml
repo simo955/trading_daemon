@@ -1,5 +1,0 @@
-steps:
-  - name: Baisc action
-    env: # Or as an environment variable
-      API_KEY: ${{ secrets.API_KEY }}
-      BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
