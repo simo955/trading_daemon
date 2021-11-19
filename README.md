@@ -5,13 +5,14 @@
 This code has been written as an exercise with bots and deamons in my free time.
 
 The idea is to have a deamon running in background which keeps fetching the price of the wanted stock. When it registers a fast increasing (or decreasing) with respect of the avg of the past n prices, it notifies you. 
-In order to work it need an API_KEY from https://site.financialmodelingprep.com and a BOT_TOKEN from https://core.telegram.org/bots.
+In order to work properly it needs:<br />
+    - `API_KEY` from https://site.financialmodelingprep.com 
+    - `BOT_TOKEN` from https://core.telegram.org/bots.
 
 ## Goal
 ![bubble](/img/gmeBubble.png)
 
 Get notified at the right moment! 
-The bot bot goal is to keep polling in the background the price of a wanted stock and return a message only if that stock is currently growing/decreasing dramatically. 
 Every `POLLING_SECONDS` seconds it will query for the price of the wanted stock. If that price is very different from the avg of the past n prices it means that the stock is currenty on a roller coaster. It is wise to know it!
 ## Usage
 1- `/start` to start the deamon <br />
