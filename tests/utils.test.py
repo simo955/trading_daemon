@@ -1,7 +1,10 @@
+import sys
+sys.path.insert(0, '..')
+
 import logging
 import unittest
 from pydash import get as lget
-from getQuotes import getQuote, computeDifference
+from src.getQuotes import getQuote, computeDifference
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
