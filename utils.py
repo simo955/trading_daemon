@@ -3,7 +3,7 @@ def areBotConfigurationsValids(ticker, seconds):
         return False
     if ticker == '':
         return False
-    if seconds < 10 or seconds > 10000:
+    if seconds < 60 or seconds > 10000:
         return False
     return True
 
