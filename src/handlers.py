@@ -7,6 +7,7 @@ from getQuotes import manage_stack
 from utils import areBotConfigurationsValids
 
 from conf import STARTING_SYMBOL, SLEEP_SECONDS, BOT_NAME,UPDATE_MSG,WIKI_URL
+from conf import bot_configuration_cmd
 
 def startHandler(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(
