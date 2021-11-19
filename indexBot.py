@@ -48,7 +48,7 @@ def configure_bot(update: Update, context: CallbackContext) -> None:
     global isConfigured
     global STARTING_SYMBOL
     global SLEEP_SECONDS
-    defaultMessage = 'Wrong parameters passed. Using default <TICKER> and <POLLING_SECONDS>'
+    defaultMessage = 'Wrong parameters passed. The bot is now using default values'
     
     isConfigured=True
     if context and isinstance(context.args, list) and len(context.args)>=2:
