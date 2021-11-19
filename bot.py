@@ -9,8 +9,10 @@ from telegram.utils.helpers import escape_markdown
 from getQuotes import manage_stack
 from utils import areBotConfigurationsValids
 from conf import STARTING_SYMBOL, SLEEP_SECONDS, BOT_NAME,UPDATE_MSG,WIKI_URL, bot_configuration_cmd, bot_start_deamong_cmd
-from keys import BOT_TOKEN
+
+BOT_TOKEN = os.environ['BOT_TOKEN']
 PORT = int(os.environ.get('PORT', '8443'))
+
 
 # Enable logging
 logging.basicConfig(
