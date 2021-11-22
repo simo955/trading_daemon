@@ -1,7 +1,6 @@
 BASE_URL='https://financialmodelingprep.com/api/v3'
 STARTING_SYMBOL='GME'
 SLEEP_SECONDS=60
-BOT_NAME='TrAdInG-DeAmOn-BoT'
 PERCENTAGE_DIFF_TRESHOLD=5
 NO_UPDATE_MSG = 'No significant different in percentage'
 UPDATE_MSG = 'Check it out! The price changed rapidly!'
