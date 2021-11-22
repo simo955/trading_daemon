@@ -6,12 +6,12 @@ from telegram.ext import CallbackContext
 from getQuotes import manage_stack
 from utils import areBotConfigurationsValids
 
-from conf import STARTING_SYMBOL, SLEEP_SECONDS, BOT_NAME,UPDATE_MSG,WIKI_URL
+from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL
 from conf import bot_configuration_cmd
 
 def startHandler(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(
-        'Hi welcom to {}! First: configure your deamon using: {} <TICKER> <POLLING_SECONDS>'.format(BOT_NAME,bot_configuration_cmd),
+        'Hi welcom! First: configure your deamon using: /{} <TICKER> <POLLING_SECONDS>'.format(bot_configuration_cmd),
          quote=True
          )
 
@@ -32,7 +32,7 @@ def start_deamonHandler(update: Update, _: CallbackContext) -> None:
 
     if not isConfigured:
         update.message.reply_text(
-            'First: configure your deamon using: {} <TICKER> <POLLING_SECONDS>'.format(bot_configuration_cmd),
+            'First: configure your deamon using: /{} <TICKER> <POLLING_SECONDS>'.format(bot_configuration_cmd),
             quote=True
         )
         return 
@@ -45,6 +45,8 @@ def start_deamonHandler(update: Update, _: CallbackContext) -> None:
         if msg==UPDATE_MSG:
             update.message.reply_text(msg)
         time.sleep(SLEEP_SECONDS)
+    update.message.reply_text('Daemon is stopping. {} prices over the deamon alive period: {}'.format(STARTING_SYMBOL, quotes_list))
+
 
 #Function used to to set all the configurations required for running the deamon
 def configure_botHandler(update: Update, context: CallbackContext) -> None:

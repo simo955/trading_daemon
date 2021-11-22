@@ -38,3 +38,6 @@ Example: <br />
 - [Daemonocle](https://pypi.org/project/daemonocle/) -is a library for creating your own Unix-style daemons written in Python
 - [Python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot#documentation) - Library that provides a pure Python interface for the Telegram Bot API.
 - [FMP](https://site.financialmodelingprep.com) - APIs to fetch the current stock price
+
+## Limits
+- Trading-Deamon is exploiting [FMP](https://site.financialmodelingprep.com) free APIs. Due to that only 250 requests/day are possible.  
