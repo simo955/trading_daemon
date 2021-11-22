@@ -4,7 +4,7 @@ sys.path.insert(0, '..')
 import logging
 import unittest
 from pydash import get as lget
-from src.getQuotes import getQuote, computeDifference
+from src.getQuotes import getRealTimeQuote, computeDifference
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
@@ -12,14 +12,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class TestSum(unittest.TestCase):
-    def test_getQuote(self):
+    def test_getRealTimeQuote(self):
         quote = 'CCL'
-        result = getQuote(logger, quote)
+        result = getRealTimeQuote(logger, quote)
         result_name = lget(result,'name', None)
         self.assertEqual(result_name.lower(), 'Carnival Corporation & Plc'.lower(), "Should be equal")
 
         quote = 'XXXXXXXXXXXX'
-        result = getQuote(logger, quote)
+        result = getRealTimeQuote(logger, quote)
         result_name = lget(result,'name', None)
         self.assertEqual(result_name, None, "Should be null")
 

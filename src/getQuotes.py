@@ -8,7 +8,7 @@ from utils import constructURL,  avg
 API_KEY = os.environ['API_KEY']
 
 #Query financialmodelingprep API to get the quote of the symbol
-def getQuote(logger,symbol):
+def getRealTimeQuote(logger,symbol):
     logger.debug('Getting quote of symbol {}'.format(symbol))
     url = constructURL(BASE_URL,quote_endpoint,API_KEY,symbol)
     response = urlopen(url)
@@ -31,7 +31,7 @@ def computeDifference(logger, quotes_list, current_quote):
 #Get the quote of the symbol and compute the difference of the last 5 quotes
 def manage_stack(logger, quotes_list, symbol):
     logger.debug('Managing stack, current quote_list {}'.format(quotes_list))
-    currentQuote = getQuote(logger, symbol)
+    currentQuote = getRealTimeQuote(logger, symbol)
     currentPrice = lget(currentQuote, ['price'], None)
     if currentQuote is None or currentPrice is None:
         return 'Error'
