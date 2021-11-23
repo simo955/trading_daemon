@@ -1,5 +1,5 @@
-import time
 import logging
+import time
 
 from telegram import Update
 from telegram.ext import CallbackContext
@@ -9,10 +9,9 @@ from utils import areBotConfigurationsValids, formatMessage
 from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL
 from conf import bot_configuration_cmd
 
-from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, KO_CONFIGURATION_MSG,OK_CONFIGURATION_MSG, FINISH_MSG
+from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, KO_CONFIGURATION_MSG,OK_CONFIGURATION_MSG, START_MSG, FINISH_MSG
 
 runningFlag= True
-# Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
@@ -56,7 +55,7 @@ def start_deamonHandler(update: Update, _: CallbackContext) -> None:
     global runningFlag
 
     quotes_list=[]
-    update.message.reply_text('Daemon is going background')
+    update.message.reply_text(START_MSG)
     while runningFlag:
         logger.debug('Still running')
         msg = manage_stack(logger, quotes_list, STARTING_SYMBOL)

@@ -1,4 +1,6 @@
 import os
+import logging
+
 from telegram.ext import Updater, MessageHandler, Filters,CommandHandler
 
 from conf import bot_configuration_cmd, bot_start_deamong_cmd
@@ -9,7 +11,6 @@ def main() -> None:
     PORT = int(os.environ.get('PORT', '8443'))
 
     """Run bot."""
-
     updater = Updater(BOT_TOKEN)
     dispatcher = updater.dispatcher
 
@@ -18,7 +19,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("stop", stopHandler))
     dispatcher.add_handler(CommandHandler("help", helpHandler))
     dispatcher.add_handler(CommandHandler(bot_configuration_cmd, configure_botHandler))
-    dispatcher.add_handler(CommandHandler(bot_start_deamong_cmd, start_deamonHandler))
+    dispatcher.add_handler(CommandHandler(bot_start_deamong_cmd, start_deamonHandler, run_async=True))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echoWrongCmdHandler))
 
     # Start the Bot
