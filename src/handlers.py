@@ -21,6 +21,7 @@ def startHandler(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(formatMessage(WELCOME_MSG, bot_configuration_cmd),quote=True)
 
 def stopHandler(update: Update, _: CallbackContext) -> None:
+    logger.info('Stopping Deamon iteration')
     global runningFlag
     runningFlag=False
 
@@ -63,4 +64,4 @@ def start_deamonHandler(update: Update, _: CallbackContext) -> None:
         if msg==UPDATE_MSG:
             update.message.reply_text(msg)
         time.sleep(SLEEP_SECONDS)
-    update.message.reply_text(formatMessage(FINISH_MSG, [STARTING_SYMBOL, quotes_list]),parse_mode='HTML')
+    update.message.reply_text(formatMessage(FINISH_MSG, [STARTING_SYMBOL, quotes_list]))
