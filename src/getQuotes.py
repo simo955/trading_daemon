@@ -18,7 +18,7 @@ def getRealTimeQuote(logger,symbol):
 
 #Compute the difference between the last 5 quotes and current quote
 def computeDifference(logger, quotes_list, current_quote):
-    logger.debug('Computing the percentage difference of avg({}) and {}'.format(quotes_list, current_quote))
+    logger.info('Computing the percentage difference of avg({}) and {}'.format(quotes_list, current_quote))
     numberPastQuotes = len(quotes_list)
     if numberPastQuotes==0:
         return 0
@@ -34,12 +34,12 @@ def manage_stack(logger, quotes_list, symbol):
     currentQuote = getRealTimeQuote(logger, symbol)
     currentPrice = lget(currentQuote, ['price'], None)
     if currentQuote is None or currentPrice is None:
-        return 'Error'
+        return 'Error', quotes_list
     diff = computeDifference(logger, quotes_list,currentPrice)
-    logger.debug('Result difference {}'.format(diff))
+    logger.info('Result difference {}'.format(diff))
     quotes_list.append(currentPrice)
     if diff >=PERCENTAGE_DIFF_TRESHOLD:
-        return UPDATE_MSG
-    return NO_UPDATE_MSG
+        return UPDATE_MSG, quotes_list
+    return NO_UPDATE_MSG, quotes_list
 
 
