@@ -9,7 +9,7 @@ from utils import areBotConfigurationsValids, formatMessage
 from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL, MAXIMUM_ITERATIONS
 from conf import bot_configuration_cmd
 
-from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, KO_CONFIGURATION_MSG,OK_CONFIGURATION_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG
+from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, KO_CONFIGURATION_MSG,OK_CONFIGURATION_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG,STOPPING_MSG
 
 keepRunningFlag=True
 alreadyRunning=False
@@ -25,7 +25,7 @@ def stopHandler(update: Update, _: CallbackContext) -> None:
     logger.info('Stopping Deamon iteration')
     global keepRunningFlag
     keepRunningFlag=False
-    update.message.reply_text(formatMessage(WELCOME_MSG))
+    update.message.reply_text(formatMessage(STOPPING_MSG))
 
 
 def helpHandler(update: Update, _: CallbackContext) -> None:
