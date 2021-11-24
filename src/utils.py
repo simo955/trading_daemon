@@ -14,5 +14,5 @@ def avg(lst):
 def constructURL(base,endpoint,key, query):
     return '{}{}/{}?apikey={}'.format(base,endpoint,query,key)
 
-def formatMessage(text, argsList):
+def formatMessage(text, argsList=[]):
     return text.format(*argsList)
