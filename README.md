@@ -22,7 +22,7 @@ Every `POLLING_SECONDS` seconds it will query for the price of the wanted stock.
  - If no parameter is passed then the default parameters will be used (GME 60). <br />
 Example: <br />
  ```
-`/conf_bot GME 120` // The bot will query for Amazon stock price every 2 minutes
+/conf_bot GME 120 // The bot will query for Amazon stock price every 2 minutes
  ```
 3- `/start_deamon` actually starts the background activity of the bot.
 ## Features
