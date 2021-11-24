@@ -5,3 +5,4 @@ KO_CONFIGURATION_MSG='Wrong parameters passed. \n\nThe bot is now using default 
 OK_CONFIGURATION_MSG='Bot new configurations were updated correctly'
 START_MSG='Daemon is going background'
 FINISH_MSG= 'Daemon is stopping. \n\n{} prices over the deamon alive period: {} \n'
+ALREADY_RUNNING_MSG= 'Daemon is already running in background. Plese wait for it to finish its previous search.'

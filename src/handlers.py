@@ -6,12 +6,13 @@ from telegram.ext import CallbackContext
 from getQuotes import manage_stack
 from utils import areBotConfigurationsValids, formatMessage
 
-from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL
+from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL, MAXIMUM_ITERATIONS
 from conf import bot_configuration_cmd
 
-from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, KO_CONFIGURATION_MSG,OK_CONFIGURATION_MSG, START_MSG, FINISH_MSG
+from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, KO_CONFIGURATION_MSG,OK_CONFIGURATION_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG
 
-runningFlag= True
+keepRunningFlag=True
+alreadyRunning=False
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
@@ -22,9 +23,8 @@ def startHandler(update: Update, _: CallbackContext) -> None:
 
 def stopHandler(update: Update, _: CallbackContext) -> None:
     logger.info('Stopping Deamon iteration')
-    global runningFlag
-    runningFlag=False
-
+    global keepRunningFlag
+    keepRunningFlag=False
 
 def helpHandler(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(formatMessage(HELP_MSG, WIKI_URL),parse_mode='HTML')
@@ -32,7 +32,6 @@ def helpHandler(update: Update, _: CallbackContext) -> None:
 def echoWrongCmdHandler(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(WRONG_COMMAND_MSG)
 
-#Function used to to set all the configurations required for running the deamon
 def configure_botHandler(update: Update, context: CallbackContext) -> None:
     global isConfigured
     global STARTING_SYMBOL
@@ -53,15 +52,25 @@ def configure_botHandler(update: Update, context: CallbackContext) -> None:
 
 def start_deamonHandler(update: Update, _: CallbackContext) -> None:
     global isConfigured
-    global runningFlag
+    global keepRunningFlag
+    global alreadyRunning
 
+    if alreadyRunning:
+        update.message.reply_text(ALREADY_RUNNING_MSG)
+        return
+    alreadyRunning=True
     quotes_list=[]
+    iterationCounter = 0
     update.message.reply_text(START_MSG)
-    while runningFlag:
+    while keepRunningFlag and iterationCounter<MAXIMUM_ITERATIONS:
         logger.debug('Still running')
-        msg = manage_stack(logger, quotes_list, STARTING_SYMBOL)
+        msg, quotes_list = manage_stack(logger, quotes_list, STARTING_SYMBOL)
         logger.info('Ending iteration. MSG={}'.format(msg))
-        if msg==UPDATE_MSG:
+        if msg==UPDATE_MSG or msg=='Error':
             update.message.reply_text(msg)
+            return
+        iterationCounter+=1
         time.sleep(SLEEP_SECONDS)
+    alreadyRunning=False
     update.message.reply_text(formatMessage(FINISH_MSG, [STARTING_SYMBOL, quotes_list]))
+
