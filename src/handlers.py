@@ -1,59 +1,44 @@
-import time
 import logging
+import time
 
 from telegram import Update
 from telegram.ext import CallbackContext
 from getQuotes import manage_stack
-from utils import areBotConfigurationsValids
+from utils import areBotConfigurationsValids, formatMessage
 
-from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL
+from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL, MAXIMUM_ITERATIONS
 from conf import bot_configuration_cmd
 
+from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, KO_CONFIGURATION_MSG,OK_CONFIGURATION_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG
+
+keepRunningFlag=True
+alreadyRunning=False
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+)
+logger = logging.getLogger(__name__)
+
 def startHandler(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text(
-        'Hi welcom! First: configure your deamon using: /{} <TICKER> <POLLING_SECONDS>'.format(bot_configuration_cmd),
-         quote=True
-         )
+    update.message.reply_text(formatMessage(WELCOME_MSG, bot_configuration_cmd),quote=True)
+
+def stopHandler(update: Update, _: CallbackContext) -> None:
+    logger.info('Stopping Deamon iteration')
+    global keepRunningFlag
+    keepRunningFlag=False
+    update.message.reply_text(formatMessage(WELCOME_MSG))
+
 
 def helpHandler(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text(
-        'Want to know more about Trading-Deamon? Click <a href="{}">here</a>'.format(WIKI_URL),
-        parse_mode='HTML'
-        )
+    update.message.reply_text(formatMessage(HELP_MSG, WIKI_URL),parse_mode='HTML')
 
-def start_deamonHandler(update: Update, _: CallbackContext) -> None:
-    global isConfigured
+def echoWrongCmdHandler(update: Update, _: CallbackContext) -> None:
+    update.message.reply_text(WRONG_COMMAND_MSG)
 
-    # Enable logging
-    logging.basicConfig(
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-    )
-    logger = logging.getLogger(__name__)
-
-    if not isConfigured:
-        update.message.reply_text(
-            'First: configure your deamon using: /{} <TICKER> <POLLING_SECONDS>'.format(bot_configuration_cmd),
-            quote=True
-        )
-        return 
-    quotes_list=[]
-    update.message.reply_text('Daemon is starting')
-    for i in range(0,5):
-        logger.debug('Still running')
-        msg = manage_stack(logger, quotes_list, STARTING_SYMBOL)
-        logger.info('Ending iteration. MSG={}'.format(msg))
-        if msg==UPDATE_MSG:
-            update.message.reply_text(msg)
-        time.sleep(SLEEP_SECONDS)
-    update.message.reply_text('Daemon is stopping. {} prices over the deamon alive period: {}'.format(STARTING_SYMBOL, quotes_list))
-
-
-#Function used to to set all the configurations required for running the deamon
 def configure_botHandler(update: Update, context: CallbackContext) -> None:
     global isConfigured
     global STARTING_SYMBOL
     global SLEEP_SECONDS
-    defaultMessage = 'Wrong parameters passed. The bot is now using default values'
+    defaultMessage = KO_CONFIGURATION_MSG.format(STARTING_SYMBOL,SLEEP_SECONDS)
     
     isConfigured=True
     if context and isinstance(context.args, list) and len(context.args)>=2:
@@ -62,11 +47,32 @@ def configure_botHandler(update: Update, context: CallbackContext) -> None:
         if areBotConfigurationsValids(ticker, seconds):
             STARTING_SYMBOL=ticker
             SLEEP_SECONDS=seconds
-            update.message.reply_text('Bot new configurations were updated correctly',quote=True)
+            update.message.reply_text(OK_CONFIGURATION_MSG,quote=True)
             return
 
     update.message.reply_text(defaultMessage,quote=True)
 
-def echoWrongCmdHandler(update: Update, _: CallbackContext) -> None:
-    """Echo the user message."""
-    update.message.reply_text('Wrong command used')
+def start_deamonHandler(update: Update, _: CallbackContext) -> None:
+    global isConfigured
+    global keepRunningFlag
+    global alreadyRunning
+
+    if alreadyRunning:
+        update.message.reply_text(ALREADY_RUNNING_MSG)
+        return
+    alreadyRunning=True
+    quotes_list=[]
+    iterationCounter = 0
+    update.message.reply_text(START_MSG)
+    while keepRunningFlag and iterationCounter<MAXIMUM_ITERATIONS:
+        logger.debug('Still running')
+        msg, quotes_list = manage_stack(logger, quotes_list, STARTING_SYMBOL)
+        logger.info('Ending iteration. MSG={}'.format(msg))
+        if msg==UPDATE_MSG or msg=='Error':
+            update.message.reply_text(msg)
+            return
+        iterationCounter+=1
+        time.sleep(SLEEP_SECONDS)
+    alreadyRunning=False
+    update.message.reply_text(formatMessage(FINISH_MSG, [STARTING_SYMBOL, quotes_list]))
+

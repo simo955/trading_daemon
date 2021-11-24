@@ -6,7 +6,7 @@ This code has been written as an exercise with bots and deamons in my free time.
 
 The idea is to have a deamon running in background which keeps fetching the price of the wanted stock. When it registers a fast increasing (or decreasing) with respect of the avg of the past n prices, it notifies you. 
 In order to work properly it needs:<br />
-    - `API_KEY` from https://site.financialmodelingprep.com 
+    - `API_KEY` from https://site.financialmodelingprep.com <br />
     - `BOT_TOKEN` from https://core.telegram.org/bots.
 
 ## Goal
