@@ -25,6 +25,8 @@ def stopHandler(update: Update, _: CallbackContext) -> None:
     logger.info('Stopping Deamon iteration')
     global keepRunningFlag
     keepRunningFlag=False
+    update.message.reply_text(formatMessage(WELCOME_MSG))
+
 
 def helpHandler(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(formatMessage(HELP_MSG, WIKI_URL),parse_mode='HTML')
