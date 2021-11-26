@@ -9,24 +9,27 @@ from utils import areBotConfigurationsValids, formatMessage
 from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL, MAXIMUM_ITERATIONS
 from conf import bot_configuration_cmd
 
-from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, KO_CONFIGURATION_MSG,OK_CONFIGURATION_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG,STOPPING_MSG
+from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, KO_CONFIGURATION_MSG,OK_CONFIGURATION_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG,STOPPING_MSG,STOPPING_NONEEDED__MSG
 
-keepRunningFlag=True
-alreadyRunning=False
+
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 logger = logging.getLogger(__name__)
 
-def startHandler(update: Update, _: CallbackContext) -> None:
+def startHandler(update: Update, context: CallbackContext) -> None:
+    context.user_data.update({'alreadyRunning':False, 'run':True})
     update.message.reply_text(formatMessage(WELCOME_MSG, bot_configuration_cmd),quote=True)
 
-def stopHandler(update: Update, _: CallbackContext) -> None:
+def stopHandler(update: Update, context: CallbackContext) -> None:
     logger.info('Stopping Deamon iteration')
-    global keepRunningFlag
-    keepRunningFlag=False
-    update.message.reply_text(formatMessage(STOPPING_MSG))
-
+    alreadyRunning = context.user_data.get('alreadyRunning', False)
+    run = context.user_data.get('run', True)
+    if alreadyRunning and run:
+        context.user_data.update({'run':False})
+        update.message.reply_text(formatMessage(STOPPING_MSG))
+        return
+    update.message.reply_text(formatMessage(STOPPING_NONEEDED__MSG))
 
 def helpHandler(update: Update, _: CallbackContext) -> None:
     update.message.reply_text(formatMessage(HELP_MSG, WIKI_URL),parse_mode='HTML')
@@ -52,19 +55,19 @@ def configure_botHandler(update: Update, context: CallbackContext) -> None:
 
     update.message.reply_text(defaultMessage,quote=True)
 
-def start_deamonHandler(update: Update, _: CallbackContext) -> None:
-    global isConfigured
-    global keepRunningFlag
-    global alreadyRunning
+def start_deamonHandler(update: Update, context: CallbackContext) -> None:
+    alreadyRunning = context.user_data.get('alreadyRunning', False)
+    run = context.user_data.get('run', True)
 
     if alreadyRunning:
         update.message.reply_text(ALREADY_RUNNING_MSG)
         return
-    alreadyRunning=True
+    
+    update.message.reply_text(START_MSG)
+    context.user_data.update({'alreadyRunning':True})
     quotes_list=[]
     iterationCounter = 0
-    update.message.reply_text(START_MSG)
-    while keepRunningFlag and iterationCounter<MAXIMUM_ITERATIONS:
+    while run and iterationCounter<MAXIMUM_ITERATIONS:
         logger.debug('Still running')
         msg, quotes_list = manage_stack(logger, quotes_list, STARTING_SYMBOL)
         logger.info('Ending iteration. MSG={}'.format(msg))
@@ -73,6 +76,7 @@ def start_deamonHandler(update: Update, _: CallbackContext) -> None:
             return
         iterationCounter+=1
         time.sleep(SLEEP_SECONDS)
-    alreadyRunning=False
+    context.user_data.update({'alreadyRunning':False})  
+    context.user_data.update({'run':True})   
     update.message.reply_text(formatMessage(FINISH_MSG, [STARTING_SYMBOL, quotes_list]))
 
