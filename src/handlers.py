@@ -46,7 +46,6 @@ def echoWrongCmdHandler(update: Update, _: CallbackContext) -> None:
 
 def start_deamonHandler(update: Update, context: CallbackContext) -> None:
     alreadyRunning = context.user_data.get('alreadyRunning', False)
-    run = context.user_data.get('run', True)
 
     if alreadyRunning:
         update.message.reply_text(ALREADY_RUNNING_MSG)
@@ -72,12 +71,14 @@ def start_deamonHandler(update: Update, context: CallbackContext) -> None:
     sleep_seconds = context.user_data.get('sleep_seconds')
     quotes_list=[]
     iterationCounter = 0
-    while run and iterationCounter<MAXIMUM_ITERATIONS:
-        logger.debug('Still running')
+    while context.user_data.get('run', True) and iterationCounter<MAXIMUM_ITERATIONS:
+        logger.info('Still running')
         msg, quotes_list = manage_stack(logger, quotes_list, starting_symbol)
         logger.info('Ending iteration. MSG={}'.format(msg))
         if msg==UPDATE_MSG or msg=='Error':
             update.message.reply_text(msg)
+            context.user_data.update({'alreadyRunning':False})  
+            context.user_data.update({'run':True})   
             return
         iterationCounter+=1
         time.sleep(sleep_seconds)
