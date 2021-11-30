@@ -40,3 +40,7 @@ Example: <br />
 
 ## Limits
 - Trading-Deamon is exploiting [FMP](https://site.financialmodelingprep.com) free APIs. Due to that only 250 requests/day are possible.  
+
+## Future Development
+- Bot is able to accept more than 1 symbol. This is currently impratical due to the [FMP](https://site.financialmodelingprep.com) free APIs limit.
+- Bot performs a more accurate test to verify that the passed symbol is actually valid.
