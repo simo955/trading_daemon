@@ -19,3 +19,4 @@ def constructURL(base,endpoint,key, query):
 
 def formatMessage(text, argsList=[]):
     return text.format(*argsList)
+

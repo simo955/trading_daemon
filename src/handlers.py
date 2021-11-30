@@ -82,4 +82,3 @@ def start_deamonHandler(update: Update, context: CallbackContext) -> None:
     context.user_data.update({'alreadyRunning':False})  
     context.user_data.update({'stopRun':False})   
     update.message.reply_text(formatMessage(FINISH_MSG, [starting_symbol, quotes_list]))
-

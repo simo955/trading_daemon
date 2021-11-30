@@ -44,3 +44,4 @@ Example: <br />
 ## Future Development
 - Bot is able to accept more than 1 symbol. This is currently impratical due to the [FMP](https://site.financialmodelingprep.com) free APIs limit.
 - Bot performs a more accurate test to verify that the passed symbol is actually valid.
+
