@@ -2,8 +2,8 @@ import os
 
 from telegram.ext import Updater, MessageHandler, Filters,CommandHandler
 
-from conf import bot_configuration_cmd, bot_start_deamong_cmd
-from handlers import startHandler, helpHandler, configure_botHandler, start_deamonHandler,stopHandler, echoWrongCmdHandler
+from conf import bot_start_deamong_cmd
+from handlers import startHandler, helpHandler, start_deamonHandler,stopHandler, echoWrongCmdHandler
 
 def main() -> None:
     BOT_TOKEN = os.environ['BOT_TOKEN']
@@ -17,7 +17,6 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("start", startHandler))
     dispatcher.add_handler(CommandHandler("stop", stopHandler))
     dispatcher.add_handler(CommandHandler("help", helpHandler))
-    dispatcher.add_handler(CommandHandler(bot_configuration_cmd, configure_botHandler))
     dispatcher.add_handler(CommandHandler(bot_start_deamong_cmd, start_deamonHandler, run_async=True))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, echoWrongCmdHandler))
 

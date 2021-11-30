@@ -16,15 +16,14 @@ Get notified at the right moment!
 Every `POLLING_SECONDS` seconds it will query for the price of the wanted stock. If that price is very different from the avg of the past n prices it means that the stock is currenty on a roller coaster. It is wise to know it!
 ## Usage
 1- `/start` to start the deamon <br />
-2- `/conf_bot <TICKER> <POLLING_SECONDS>` to configure the bot.
- - The `TICKER` is the symbol of the wanted stock (example GME for GameStop). Check it out [here](https://stockanalysis.com/stocks/) for more.
+2- `/start_deamon <SYMBOL> <POLLING_SECONDS>` starts the background activity of the bot..
+ - The `SYMBOL` is the symbol of the wanted stock (example GME for GameStop). Check it out [here](https://stockanalysis.com/stocks/) for more.
  - The `POLLING_SECONDS` is the number of seconds between each query for the new price. This number must be above 60 because 1 minute is the minimum amout of time between each query.
  - If no parameter is passed then the default parameters will be used (GME 60). <br />
 Example: <br />
  ```
-`/conf_bot GME 120` // The bot will query for Amazon stock price every 2 minutes
+/start_deamon GME 120 // The bot will query for Amazon stock price every 2 minutes
  ```
-3- `/start_deamon` actually starts the background activity of the bot.
 ## Features
 
 - Use the code as a Deamon or a Telegram-Bot (it depends on the file you start)
@@ -41,3 +40,8 @@ Example: <br />
 
 ## Limits
 - Trading-Deamon is exploiting [FMP](https://site.financialmodelingprep.com) free APIs. Due to that only 250 requests/day are possible.  
+
+## Future Development
+- Bot is able to accept more than 1 symbol. This is currently impratical due to the [FMP](https://site.financialmodelingprep.com) free APIs limit.
+- Bot performs a more accurate test to verify that the passed symbol is actually valid.
+
