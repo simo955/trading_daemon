@@ -1,11 +1,14 @@
-def areBotConfigurationsValids(ticker, seconds):
-    if ticker is None or seconds is None:
+from avaiableSymbols import isSymbolInList
+
+def areBotConfigurationsValids(symbol, seconds):
+    if symbol is None or seconds is None:
         return False
-    if ticker == '':
+    if symbol == '':
         return False
     if seconds < 60 or seconds > 10000:
         return False
-    return True
+    return isSymbolInList(symbol)
+
 
 # Get average of a list
 def avg(lst):

@@ -21,17 +21,18 @@ def startHandler(update: Update, context: CallbackContext) -> None:
     context.user_data.update(
         {
         'alreadyRunning':False,
-        'run':True,
+        'stopRun':False,
+        'starting_symbol': STARTING_SYMBOL,
+        'sleep_seconds': SLEEP_SECONDS
         }
     )
     update.message.reply_text(formatMessage(WELCOME_MSG, bot_configuration_cmd),quote=True)
 
 def stopHandler(update: Update, context: CallbackContext) -> None:
-    logger.info('Stopping Deamon iteration')
     alreadyRunning = context.user_data.get('alreadyRunning', False)
-    run = context.user_data.get('run', True)
-    if alreadyRunning and run:
-        context.user_data.update({'run':False})
+    stopRun = context.user_data.get('stopRun', False)
+    if alreadyRunning and not stopRun:
+        context.user_data.update({'stopRun':True})
         update.message.reply_text(formatMessage(STOPPING_MSG))
         return
     update.message.reply_text(formatMessage(STOPPING_NONEEDED__MSG))
@@ -51,36 +52,34 @@ def start_deamonHandler(update: Update, context: CallbackContext) -> None:
     
     # Load configuration
     if context and isinstance(context.args, list) and len(context.args)>=2:
-        ticker = context.args[0]
+        symbol = context.args[0]
         seconds = int(context.args[1])
-        if areBotConfigurationsValids(ticker, seconds):
+        if areBotConfigurationsValids(symbol, seconds):
             context.user_data.update(
                 {
-                'starting_symbol': ticker,
+                'starting_symbol': symbol,
                 'sleep_seconds': seconds
                 }
             )
             update.message.reply_text(OK_CONFIGURATION_MSG,quote=True)
-
-    update.message.reply_text(START_MSG)
 
     context.user_data.update({'alreadyRunning':True})
     starting_symbol = context.user_data.get('starting_symbol',STARTING_SYMBOL)
     sleep_seconds = context.user_data.get('sleep_seconds',SLEEP_SECONDS)
     quotes_list=[]
     iterationCounter = 0
-    while context.user_data.get('run', True) and iterationCounter<MAXIMUM_ITERATIONS:
-        logger.info('Still running')
+    update.message.reply_text(formatMessage(START_MSG,starting_symbol, sleep_seconds))
+    while context.user_data.get('stopRun', False) and iterationCounter<MAXIMUM_ITERATIONS:
         msg, quotes_list = manage_stack(logger, quotes_list, starting_symbol)
         logger.info('Ending iteration. MSG={}'.format(msg))
         if msg==UPDATE_MSG or msg=='Error':
             update.message.reply_text(msg)
             context.user_data.update({'alreadyRunning':False})  
-            context.user_data.update({'run':True})   
+            context.user_data.update({'stopRun':False})   
             return
         iterationCounter+=1
         time.sleep(sleep_seconds)
     context.user_data.update({'alreadyRunning':False})  
-    context.user_data.update({'run':True})   
+    context.user_data.update({'stopRun':False})   
     update.message.reply_text(formatMessage(FINISH_MSG, [starting_symbol, quotes_list]))
 
