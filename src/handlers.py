@@ -22,8 +22,6 @@ def startHandler(update: Update, context: CallbackContext) -> None:
         {
         'alreadyRunning':False,
         'run':True,
-        'starting_symbol': STARTING_SYMBOL,
-        'sleep_seconds': SLEEP_SECONDS
         }
     )
     update.message.reply_text(formatMessage(WELCOME_MSG, bot_configuration_cmd),quote=True)
@@ -67,8 +65,8 @@ def start_deamonHandler(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(START_MSG)
 
     context.user_data.update({'alreadyRunning':True})
-    starting_symbol = context.user_data.get('starting_symbol')
-    sleep_seconds = context.user_data.get('sleep_seconds')
+    starting_symbol = context.user_data.get('starting_symbol',STARTING_SYMBOL)
+    sleep_seconds = context.user_data.get('sleep_seconds',SLEEP_SECONDS)
     quotes_list=[]
     iterationCounter = 0
     while context.user_data.get('run', True) and iterationCounter<MAXIMUM_ITERATIONS:

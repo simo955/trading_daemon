@@ -1,4 +1,4 @@
-WELCOME_MSG='Hi welcome! \n\nFirst: configure your deamon using: \n/{}  <TICKER> <POLLING_SECONDS>'
+WELCOME_MSG='Hi welcome! \n\nStart the deamon using: \n /{}  <TICKER> <POLLING_SECONDS>'
 HELP_MSG='Want to know more about Trading-Deamon? \nClick <a href="{}">here</a>'
 WRONG_COMMAND_MSG='Wrong command used'
 OK_CONFIGURATION_MSG='Bot new configurations were updated correctly'
