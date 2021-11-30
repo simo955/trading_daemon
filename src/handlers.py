@@ -68,7 +68,7 @@ def start_deamonHandler(update: Update, context: CallbackContext) -> None:
     sleep_seconds = context.user_data.get('sleep_seconds',SLEEP_SECONDS)
     quotes_list=[]
     iterationCounter = 0
-    update.message.reply_text(formatMessage(START_MSG,starting_symbol, sleep_seconds))
+    update.message.reply_text(formatMessage(START_MSG,[starting_symbol, sleep_seconds]))
     while context.user_data.get('stopRun', False) and iterationCounter<MAXIMUM_ITERATIONS:
         msg, quotes_list = manage_stack(logger, quotes_list, starting_symbol)
         logger.info('Ending iteration. MSG={}'.format(msg))
