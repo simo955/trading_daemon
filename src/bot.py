@@ -2,7 +2,7 @@ import os
 
 from telegram.ext import Updater, MessageHandler, Filters,CommandHandler
 
-from conf import bot_start_deamong_cmd
+from utils.conf import bot_start_deamong_cmd
 from handlers import startHandler, helpHandler, start_deamonHandler,stopHandler, echoWrongCmdHandler
 
 def main() -> None:
