@@ -5,7 +5,8 @@ from telegram.ext import CallbackContext
 from telegram import Update
 
 from getQuotes import manage_stack
-from utils.generalUtils import formatMessage, loadContextConfigurations, setContextFinishConfigurations
+from utils.generalUtils import formatMessage
+from utils.botUtils import loadContextConfigurations, setContextFinishConfigurations
 
 from utils.conf import bot_configuration_cmd, STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL, MAXIMUM_ITERATIONS
 from utils.text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG,STOPPING_MSG,STOPPING_NONEEDED__MSG
