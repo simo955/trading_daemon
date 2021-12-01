@@ -1,4 +1,5 @@
 import time
+import logging
 
 from telegram.ext import CallbackContext
 from telegram import Update
@@ -10,6 +11,11 @@ from utils.conf import bot_configuration_cmd, STARTING_SYMBOL, SLEEP_SECONDS,UPD
 from utils.text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG,STOPPING_MSG,STOPPING_NONEEDED__MSG
 
 from utils.myUpdater import myUpdate
+
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+)
+logger = logging.getLogger(__name__)
 
 def startHandler(update: myUpdate, context: CallbackContext) -> None:
     context.user_data.update(
