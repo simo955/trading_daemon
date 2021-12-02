@@ -1,84 +1,72 @@
-import logging
 import time
 
-from telegram import Update
 from telegram.ext import CallbackContext
+from telegram import Update
+
 from getQuotes import manage_stack
-from utils import areBotConfigurationsValids, formatMessage
+from utils.botUtils import loadContextConfigurations, setContextFinishConfigurations
 
-from conf import STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL, MAXIMUM_ITERATIONS
-from conf import bot_configuration_cmd
+from utils.conf import bot_configuration_cmd, STARTING_SYMBOL, SLEEP_SECONDS,UPDATE_MSG,WIKI_URL, MAXIMUM_ITERATIONS
+from utils.text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG,STOPPING_MSG,STOPPING_NONEEDED__MSG
 
-from text import WELCOME_MSG, HELP_MSG, WRONG_COMMAND_MSG,OK_CONFIGURATION_MSG, START_MSG, FINISH_MSG, ALREADY_RUNNING_MSG,STOPPING_MSG,STOPPING_NONEEDED__MSG
+from utils.myUpdaterService import myUpdaterService
 
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+updaterService = myUpdaterService()
 
 def startHandler(update: Update, context: CallbackContext) -> None:
     context.user_data.update(
         {
-        'alreadyRunning':False,
+        'isRunning':False,
         'stopRun':False,
         'starting_symbol': STARTING_SYMBOL,
         'sleep_seconds': SLEEP_SECONDS
         }
     )
-    update.message.reply_text(formatMessage(WELCOME_MSG, bot_configuration_cmd),quote=True)
+    updaterService.sendMessage(update, WELCOME_MSG, bot_configuration_cmd)
 
 def stopHandler(update: Update, context: CallbackContext) -> None:
-    alreadyRunning = context.user_data.get('alreadyRunning', False)
+    isRunning = context.user_data.get('isRunning', False)
     stopRun = context.user_data.get('stopRun', False)
-    if alreadyRunning and not stopRun:
+    if isRunning and not stopRun:
         context.user_data.update({'stopRun':True})
-        update.message.reply_text(formatMessage(STOPPING_MSG))
+        updaterService.sendMessage(update, STOPPING_MSG)
         return
-    update.message.reply_text(formatMessage(STOPPING_NONEEDED__MSG))
+    updaterService.sendMessage(update, STOPPING_NONEEDED__MSG)
 
 def helpHandler(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text(formatMessage(HELP_MSG, WIKI_URL),parse_mode='HTML')
+    updaterService.sendMessage(update, HELP_MSG, WIKI_URL, {'parse_mode':'HTML'})
 
 def echoWrongCmdHandler(update: Update, _: CallbackContext) -> None:
-    update.message.reply_text(WRONG_COMMAND_MSG)
+    updaterService.sendMessage(update, WRONG_COMMAND_MSG)
+
+def debugHandler(update: Update, context: CallbackContext) -> None:
+    updaterService.sendMessage(update, '{}', [context.user_data])
 
 def start_deamonHandler(update: Update, context: CallbackContext) -> None:
-    alreadyRunning = context.user_data.get('alreadyRunning', False)
+    isRunning = context.user_data.get('isRunning', False)
 
-    if alreadyRunning:
-        update.message.reply_text(ALREADY_RUNNING_MSG)
+    if isRunning:
+        updaterService.sendMessage(update, ALREADY_RUNNING_MSG)
         return
     
     # Load configuration
-    if context and isinstance(context.args, list) and len(context.args)>=2:
-        symbol = context.args[0]
-        seconds = int(context.args[1])
-        if areBotConfigurationsValids(symbol, seconds):
-            context.user_data.update(
-                {
-                'starting_symbol': symbol,
-                'sleep_seconds': seconds
-                }
-            )
-            update.message.reply_text(OK_CONFIGURATION_MSG,quote=True)
+    starting_symbol,sleep_seconds = loadContextConfigurations(context)
 
-    context.user_data.update({'alreadyRunning':True})
-    starting_symbol = context.user_data.get('starting_symbol',STARTING_SYMBOL)
-    sleep_seconds = context.user_data.get('sleep_seconds',SLEEP_SECONDS)
+    context.user_data.update({'isRunning':True})
     quotes_list=[]
     iterationCounter = 0
-    update.message.reply_text(formatMessage(START_MSG,[starting_symbol, sleep_seconds]))
+    
+    updaterService.sendMessage(update, START_MSG, [starting_symbol, sleep_seconds])
     while context.user_data.get('stopRun', False)==False and iterationCounter<MAXIMUM_ITERATIONS:
-        msg, quotes_list = manage_stack(logger, quotes_list, starting_symbol)
-        logger.info('Ending iteration. MSG={}'.format(msg))
+        msg, quotes_list = manage_stack(updaterService, quotes_list, starting_symbol)
+        updaterService.log('Ending iteration. MSG={}', msg)
         if msg==UPDATE_MSG or msg=='Error':
-            update.message.reply_text(msg)
-            context.user_data.update({'alreadyRunning':False})  
-            context.user_data.update({'stopRun':False})   
+            updaterService.sendMessage(update, msg)
+            updaterService.sendMessage(update,FINISH_MSG,[starting_symbol, quotes_list])             
+            setContextFinishConfigurations(context) 
             return
         iterationCounter+=1
         time.sleep(sleep_seconds)
-    context.user_data.update({'alreadyRunning':False})  
-    context.user_data.update({'stopRun':False})   
-    update.message.reply_text(formatMessage(FINISH_MSG, [starting_symbol, quotes_list]))
+
+    setContextFinishConfigurations(context) 
+    updaterService.sendMessage(update, FINISH_MSG, [starting_symbol, quotes_list])
