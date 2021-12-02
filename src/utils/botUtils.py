@@ -1,5 +1,5 @@
-from conf import STARTING_SYMBOL, SLEEP_SECONDS
-from avaiableSymbols import isSymbolInList
+from utils.conf import STARTING_SYMBOL, SLEEP_SECONDS
+from getQuotes import getRealTimeQuote
 
 def areBotConfigurationsValids(symbol, seconds):
     if symbol is None or seconds is None:
@@ -8,7 +8,10 @@ def areBotConfigurationsValids(symbol, seconds):
         return False
     if seconds < 60 or seconds > 10000:
         return False
-    return isSymbolInList(symbol)
+    quote = getRealTimeQuote(symbol)
+    if quote is None:
+        return False
+    return True
 
 def loadContextConfigurations(context):
     if context and isinstance(context.args, list) and len(context.args)>=2:

@@ -6,5 +6,7 @@ def constructURL(base,endpoint,key, query):
     return '{}{}/{}?apikey={}'.format(base,endpoint,query,key)
 
 def formatMessage(text, argsList=[]):
-    return text.format(*argsList)
-
+    if isinstance(argsList, list):
+        return text.format(*argsList)
+    else:
+        return text.format(argsList)
