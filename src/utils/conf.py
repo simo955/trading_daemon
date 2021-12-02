@@ -8,5 +8,4 @@ WIKI_URL='https://github.com/simo955/trading_deamon/blob/main/README.md/'
 MAXIMUM_ITERATIONS = 10
 
 quote_endpoint ='/quote'
-bot_configuration_cmd='conf_bot'
 bot_start_deamong_cmd='start_deamon'
