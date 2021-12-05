@@ -4,7 +4,6 @@ from urllib.request import urlopen
 from pydash import get as lget
    
 from utils.conf import BASE_URL, PERCENTAGE_DIFF_TRESHOLD, NO_UPDATE_MSG,UPDATE_MSG, quote_endpoint
-from utils.botUtils import constructURL,  avg
 
 API_KEY = os.environ['API_KEY']
 
@@ -42,7 +41,10 @@ def getRealTimeQuote(symbol):
     parsed_response = json.loads(data)
     return lget(parsed_response, [0], None)
 
+def avg(array):
+    return sum(array) / len(array)
 
-    
+def constructURL(base,endpoint,key, query):
+    return '{}{}/{}?apikey={}'.format(base,endpoint,query,key) 
 
 
