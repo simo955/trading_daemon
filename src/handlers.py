@@ -49,7 +49,7 @@ def start_deamonHandler(update: Update, context: CallbackContext) -> None:
         updaterService.sendMessage(update, ALREADY_RUNNING_MSG)
         return
     
-    # Load configuration
+    # Load configurations
     starting_symbol,sleep_seconds = loadContextConfigurations(context)
 
     context.user_data.update({'isRunning':True})

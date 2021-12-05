@@ -1,10 +1,13 @@
 import logging
-from utils.generalUtils import formatMessage
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
-
+def formatMessage(text, argsList=[]):
+    if isinstance(argsList, list):
+        return text.format(*argsList)
+    else:
+        return text.format(argsList)
 class myUpdaterService:
     logger = logging.getLogger(__name__)
 

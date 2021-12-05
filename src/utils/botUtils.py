@@ -1,6 +1,13 @@
 from utils.conf import STARTING_SYMBOL, SLEEP_SECONDS
 from getQuotes import getRealTimeQuote
 
+# Get average of a list
+def avg(lst):
+    return sum(lst) / len(lst)
+
+def constructURL(base,endpoint,key, query):
+    return '{}{}/{}?apikey={}'.format(base,endpoint,query,key)
+
 def areBotConfigurationsValids(symbol, seconds):
     if symbol is None or seconds is None:
         return False
