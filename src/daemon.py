@@ -1,4 +1,4 @@
-# Basic version of the deamon which did not use telegram-bot functionalities
+# Basic version of the daemon which did not use telegram-bot functionalities
 import logging
 import sys
 import time
@@ -32,4 +32,4 @@ if __name__ == '__main__':
     daemon.do_action(sys.argv[1])
 
 
-# run with python3 indexDeamon.py start
+# run with python3 indexDaemon.py start

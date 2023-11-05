@@ -1,10 +1,10 @@
-> Disclaimer: This code has been written as an exercise with bots and deamons in my free time.
-# Trading Deamon
+> Disclaimer: This code has been written as an exercise with bots and daemons in my free time.
+# Trading Daemon
 
 ![](/img/hero.jpg)
 
 
-The idea is to have a deamon running in background which keeps fetching the price of the wanted stock. When it registers a suddenly increasing (or decreasing) with respect of the avg of the past *n* prices, the deamon notifies you. 
+The idea is to have a daemon running in background which keeps fetching the price of the wanted stock. When it registers a suddenly increasing (or decreasing) with respect of the avg of the past *n* prices, the daemon notifies you. 
 In order to work properly it needs:<br />
     - `API_KEY` from https://site.financialmodelingprep.com <br />
     - `BOT_TOKEN` from https://core.telegram.org/bots.
@@ -13,16 +13,16 @@ In order to work properly it needs:<br />
 ![bubble](/img/gmeBubble.png)
 
 Get notified at the right moment! <br />
-Every x=`POLLING_SECONDS` seconds the deamon will query for the price of the wanted stock. If that price is different from the avg of the past *n* prices it means that the stock is currenty on a roller coaster. It is wise to know it!
+Every x=`POLLING_SECONDS` seconds the daemon will query for the price of the wanted stock. If that price is different from the avg of the past *n* prices it means that the stock is currenty on a roller coaster. It is wise to know it!
 ## Usage
-1- `/start` to start the deamon <br />
-2- `/start_deamon <SYMBOL> <POLLING_SECONDS>` starts the background activity of the bot.
+1- `/start` to start the daemon <br />
+2- `/start_daemon <SYMBOL> <POLLING_SECONDS>` starts the background activity of the bot.
  - `SYMBOL` is the symbol of the wanted stock (example GME for Game Stop). Check it out [here](https://stockanalysis.com/stocks/) for more.
  - `POLLING_SECONDS` is the number of seconds between each query for the new price. This number must be above 60 because 1 minute is the minimum amout of time between each query.
  - If no parameter is passed then the default parameters will be used (GME 60). <br />
 Example of usage: <br />
  ```
-/start_deamon GME 60 // The bot will query for Game Stop stock price every minute
+/start_daemon GME 60 // The bot will query for Game Stop stock price every minute
  ```
 ## Features
 
@@ -32,14 +32,14 @@ Example of usage: <br />
 
 ## Tech
 
-`trading_deamon` uses a number of open source projects to work properly:
+`trading_daemon` uses a number of open source projects to work properly:
 
 - [Daemonocle](https://pypi.org/project/daemonocle/) - is a python library for creating your own Unix-style daemons.
 - [Python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot#documentation) - is a python library that provides a pure Python interface for the Telegram Bot APIs.
 - [FMP](https://site.financialmodelingprep.com) - provides APIs to fetch the current stock price.
 
 ## Limits
-- Trading-Deamon is exploiting [FMP](https://site.financialmodelingprep.com) free APIs. Due to that only 250 requests/day are possible.  
+- Trading-Daemon is exploiting [FMP](https://site.financialmodelingprep.com) free APIs. Due to that only 250 requests/day are possible.  
 
 ## Future Development
 - ~~Bot performs a more accurate test to verify that the passed symbol is actually valid.~~
